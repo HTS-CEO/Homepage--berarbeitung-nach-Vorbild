@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MB Vision - Bauherrenvertretung</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0056b3;
+            --secondary-color: #333;
+            --accent-color: #f8f9fa;
+            --text-color: #333;
+            --light-color: #fff;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        body {
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .floating-bubbles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .bubble {
+            position: absolute;
+            background: radial-gradient(circle, rgba(0,86,179,0.1) 0%, rgba(0,86,179,0.05) 100%);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+
+        .bubble:nth-child(1) { width: 80px; height: 80px; left: 10%; animation-delay: 0s; }
+        .bubble:nth-child(2) { width: 60px; height: 60px; left: 20%; animation-delay: 2s; }
+        .bubble:nth-child(3) { width: 100px; height: 100px; left: 35%; animation-delay: 4s; }
+        .bubble:nth-child(4) { width: 40px; height: 40px; left: 50%; animation-delay: 6s; }
+        .bubble:nth-child(5) { width: 70px; height: 70px; left: 70%; animation-delay: 8s; }
+        .bubble:nth-child(6) { width: 90px; height: 90px; left: 85%; animation-delay: 10s; }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.5; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+        
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            text-shadow: 0 2px 4px rgba(0,86,179,0.3);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 2rem;
+            position: relative;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--secondary-color);
+            font-weight: 500;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: width 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .nav-links a:hover::before {
+            width: 100%;
+        }
+        
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(0, 86, 179, 0.8), rgba(102, 126, 234, 0.8)), url('hero-bg.jpg') no-repeat center center/cover;
+            color: var(--light-color);
+            text-align: center;
+            padding-top: 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, transparent 20%, rgba(0,86,179,0.1) 21%, rgba(0,86,179,0.1) 34%, transparent 35%, transparent), linear-gradient(0deg, transparent 24%, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.05) 26%, transparent 27%, transparent 74%, rgba(255,255,255,0.05) 75%, rgba(255,255,255,0.05) 76%, transparent 77%, transparent);
+            background-size: 50px 50px;
+            animation: move 20s linear infinite;
+        }
+
+        @keyframes move {
+            0% { transform: translate(-50px, -50px); }
+            100% { transform: translate(0, 0); }
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            opacity: 0;
+            transform: translateY(50px);
+            animation: heroEnter 1.5s forwards 0.5s;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            font-weight: 800;
+        }
+        
+        .hero p {
+            font-size: 1.4rem;
+            margin-bottom: 2.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--gradient-1);
+            color: var(--light-color);
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.4s;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(0,86,179,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            transition: all 0.6s;
+            transform: translate(-50%, -50%);
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(0,86,179,0.4);
+        }
+
+        .stats-section {
+            background: var(--gradient-3);
+            color: var(--light-color);
+            padding: 4rem 5%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+            transform: translateY(50px);
+            opacity: 0;
+            transition: all 0.6s;
+        }
+
+        .stat-box.animate {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        
+        section {
+            padding: 5rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 4rem;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s;
+        }
+
+        .section-title.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .section-title h2 {
+            font-size: 2.8rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-weight: 700;
+            position: relative;
+        }
+
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: var(--gradient-1);
+            border-radius: 2px;
+        }
+
+        .timeline-section {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 6rem 5%;
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            background: var(--gradient-1);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -2px;
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            background: transparent;
+            width: 50%;
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: all 0.8s;
+        }
+
+        .timeline-item.animate {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            right: -10px;
+            background: var(--primary-color);
+            border: 4px solid #fff;
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+            box-shadow: 0 0 20px rgba(0,86,179,0.3);
+        }
+
+        .timeline-item:nth-child(even) {
+            left: 50%;
+            transform: translateX(50px);
+        }
+
+        .timeline-item:nth-child(even).animate {
+            transform: translateX(0);
+        }
+
+        .timeline-item:nth-child(even)::after {
+            left: -10px;
+        }
+
+        .timeline-content {
+            padding: 2rem;
+            background: white;
+            position: relative;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .timeline-content h3 {
+            color: var(--primary-color);
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s;
+        }
+
+        .about-content.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .about-text h3 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .about-text p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+        
+        .about-image {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .about-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(0,86,179,0.1), transparent);
+            z-index: 1;
+            transition: opacity 0.3s;
+        }
+
+        .about-image:hover::before {
+            opacity: 0;
+        }
+        
+        .about-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.6s ease;
+        }
+        
+        .about-image:hover img {
+            transform: scale(1.1);
+        }
+
+        .services-grid {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 6rem 5%;
+        }
+
+        .services-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .service-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+            text-align: center;
+            transition: all 0.4s;
+            transform: translateY(30px);
+            opacity: 0;
+        }
+
+        .service-card.animate {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .service-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(255,255,255,0.5);
+        }
+
+        .service-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .features {
+            background: var(--accent-color);
+            position: relative;
+        }
+
+        .features::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23f0f0f0' fill-opacity='0.4'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        
+        .features-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .feature-box {
+            background: var(--light-color);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            transition: all 0.4s;
+            opacity: 0;
+            transform: translateY(30px) scale(0.9);
+            border: 1px solid rgba(0,86,179,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: var(--gradient-1);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: -1;
+        }
+
+        .feature-box:hover::before {
+            opacity: 0.05;
+        }
+
+        .feature-box.animate {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        
+        .feature-box:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .feature-box:hover .feature-icon {
+            transform: scale(1.1);
+            color: #667eea;
+        }
+        
+        .feature-box h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .portfolio-section {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 6rem 5%;
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .portfolio-item {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.4s;
+            transform: translateY(30px);
+            opacity: 0;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .portfolio-item.animate {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .portfolio-item:hover {
+            transform: translateY(-10px) scale(1.02);
+        }
+
+        .portfolio-content {
+            padding: 2rem;
+        }
+
+        .portfolio-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .yachtyourself {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 6rem 5%;
+        }
+        
+        .yachtyourself-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .yachtyourself-image {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .yachtyourself-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.6s;
+        }
+        
+        .yachtyourself-image:hover img {
+            transform: scale(1.05);
+        }
+
+        .yachtyourself-text {
+            font-size: 1.2rem;
+            line-height: 1.8;
+        }
+
+        .testimonials-section {
+            background: #f8f9fa;
+            padding: 6rem 5%;
+        }
+
+        .testimonials-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .testimonial-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            position: relative;
+            transform: translateY(30px);
+            opacity: 0;
+            transition: all 0.6s;
+        }
+
+        .testimonial-card.animate {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .testimonial-card::before {
+            content: '\f10d';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2rem;
+            color: var(--primary-color);
+            background: white;
+            padding: 0 10px;
+        }
+
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .testimonial-author {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .cta {
+            background: var(--gradient-1);
+            color: var(--light-color);
+            text-align: center;
+            padding: 6rem 2rem;
+            border-radius: 20px;
+            margin: 4rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+            animation: sparkle 20s linear infinite;
+        }
+
+        @keyframes sparkle {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-30px, -30px) rotate(360deg); }
+        }
+        
+        .cta h2 {
+            font-size: 2.8rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .cta p {
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .contact-form {
+            background: var(--light-color);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 0 auto;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s;
+        }
+
+        .contact-form.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .form-group {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background: #f8f9fa;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: white;
+            box-shadow: 0 0 20px rgba(0,86,179,0.1);
+        }
+        
+        .form-group textarea {
+            height: 150px;
+            resize: vertical;
+        }
+        
+        footer {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: var(--light-color);
+            padding: 4rem 5% 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--gradient-1);
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links li {
+            margin: 0 1.5rem;
+        }
+        
+        .footer-links a {
+            color: var(--light-color);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .footer-links a:hover {
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+        
+        .social-links li {
+            margin: 0 1rem;
+        }
+        
+        .social-links a {
+            color: var(--light-color);
+            font-size: 1.8rem;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+        
+        .social-links a:hover {
+            color: #667eea;
+            transform: translateY(-3px) scale(1.2);
+        }
+        
+        .copyright {
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .google-rating {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 2rem 0;
+            font-size: 1.2rem;
+        }
+        
+        .stars {
+            color: #ffc107;
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes heroEnter {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding: 1rem;
+            }
+            
+            .nav-links {
+                margin-top: 1rem;
+            }
+            
+            .nav-links li {
+                margin: 0 0.8rem;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .about-content,
+            .yachtyourself-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2.2rem;
+            }
+            
+            .features-container,
+            .services-container,
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+
+            .timeline::after {
+                left: 31px;
+            }
+
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+
+            .timeline-item::after {
+                left: 21px;
+            }
+
+            .timeline-item:nth-child(even) {
+                left: 0%;
+            }
+
+            .cta h2 {
+                font-size: 2.2rem;
+            }
+
+            .cta p {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-bubbles">
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+    </div>
+
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <img style="width: 80px;" src="https://bau.mb-vision.ch/wp-content/uploads/2024/11/logo-mb-vision.webp" alt="">
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home"><i class="fas fa-home"></i> HOME</a></li>
+                <li><a href="#services"><i class="fas fa-cogs"></i> LEISTUNGEN</a></li>
+                <li><a href="#portfolio"><i class="fas fa-briefcase"></i> PROJEKTE</a></li>
+                <li><a href="#yachtyourself"><i class="fas fa-ship"></i> YACHTYOURSELF</a></li>
+                <li><a href="#about"><i class="fas fa-users"></i> ÜBER UNS</a></li>
+                <li><a href="#contact"><i class="fas fa-envelope"></i> KONTAKT</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1><i class="fas fa-hammer"></i> BAUHERRENVERTRETUNG</h1>
+            <p>Bauherrenvertretung - Ihre Interessen im Fokus</p>
+            <a href="#contact" class="btn">
+                <i class="fas fa-phone"></i> Kontakt aufnehmen
+            </a>
+        </div>
+    </section>
+
+    <section class="stats-section">
+        <div class="stats-container">
+            <div class="stat-box">
+                <div class="stat-number" data-target="25">0</div>
+                <div class="stat-label">
+                    <i class="fas fa-calendar-alt"></i> Jahre Erfahrung
+                </div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" data-target="500">0</div>
+                <div class="stat-label">
+                    <i class="fas fa-building"></i> Abgeschlossene Projekte
+                </div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" data-target="98">0</div>
+                <div class="stat-label">
+                    <i class="fas fa-heart"></i> % Kundenzufriedenheit
+                </div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" data-target="15">0</div>
+                <div class="stat-label">
+                    <i class="fas fa-users"></i> Experten im Team
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about">
+        <div class="section-title">
+            <h2><i class="fas fa-info-circle"></i> Bauherrenvertretung</h2>
+        </div>
+        <div class="about-content">
+            <div class="about-text">
+                <h3><i class="fas fa-target"></i> Bauherrenvertretung - Ihre Interessen im Fokus</h3>
+                <p>Unsere Erfahrung steht Ihnen zur Verfügung. Fehler und Baumängel kosten Zeit, Geld und Nerven – doch nicht mit uns an Ihrer Seite. Wir erkennen Probleme am Bau frühzeitig, handeln proaktiv und sorgen dafür, dass daraus folgende Kosten nicht bei Ihnen als Bauherrn hängen bleiben.</p>
+                <p>Von der Planung über die Ausführung bis hin zur Abnahme stehen wir Ihnen zuverlässig zur Seite und vertreten Ihre Interessen mit höchster Professionalität.</p>
+                <div class="btn" style="margin-top: 1.5rem;">
+                    <i class="fas fa-arrow-right"></i> Mehr erfahren
+                </div>
+            </div>
+            <div class="about-image">
+                <img src="about-image.jpg" alt="Bauherrenvertretung">
+            </div>
+        </div>
+    </section>
+
+    <section class="timeline-section">
+        <div class="section-title">
+            <h2><i class="fas fa-clock"></i> Unser Prozess</h2>
+        </div>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <h3><i class="fas fa-handshake"></i> Beratung & Planung</h3>
+                    <p>Umfassende Analyse Ihres Bauvorhabens und Entwicklung einer maßgeschneiderten Strategie für Ihr Projekt.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <h3><i class="fas fa-search"></i> Überwachung & Kontrolle</h3>
+                    <p>Kontinuierliche Bauüberwachung und Qualitätskontrolle während der gesamten Bauphase.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <h3><i class="fas fa-clipboard-check"></i> Abnahme & Dokumentation</h3>
+                    <p>Professionelle Bauabnahme mit detaillierter Dokumentation und Mängelerfassung.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <h3><i class="fas fa-tools"></i> Nachbetreuung</h3>
+                    <p>Langfristige Betreuung auch nach der Fertigstellung für Gewährleistungsangelegenheiten.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="services-grid" id="services">
+        <div class="section-title">
+            <h2><i class="fas fa-cogs"></i> Unsere Leistungen</h2>
+        </div>
+        <div class="services-container">
+            <div class="service-card">
+                <div class="service-icon">
+                    <i class="fas fa-drafting-compass"></i>
+                </div>
+                <h3>Planungsbegleitung</h3>
+                <p>Professionelle Begleitung von der ersten Idee bis zur fertigen Planung</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">
+                    <i class="fas fa-eye"></i>
+                </div>
+                <h3>Bauüberwachung</h3>
+                <p>Kontinuierliche Überwachung der Bauausführung und Qualitätssicherung</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">
+                    <i class="fas fa-calculator"></i>
+                </div>
+                <h3>Kostenkontrolle</h3>
+                <p>Transparente Kostenüberwachung und -kontrolle während des gesamten Projekts</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">
+                    <i class="fas fa-balance-scale"></i>
+                </div>
+                <h3>Rechtsbeistand</h3>
+                <p>Juristische Unterstützung bei Vertragsverhandlungen und Streitigkeiten</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+                <h3>Projektmanagement</h3>
+                <p>Koordination aller Beteiligten und termingerechte Projektabwicklung</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">
+                    <i class="fas fa-certificate"></i>
+                </div>
+                <h3>Qualitätsprüfung</h3>
+                <p>Umfassende Qualitätskontrolle und Abnahmeprüfungen</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="section-title">
+            <h2><i class="fas fa-star"></i> Was hebt uns von anderen ab?</h2>
+            <p>Die MB Vision GmbH steht für ganzheitliche Betreuung, individuelle Lösungen und höchste Professionalität. Mit langjähriger Erfahrung, innovativen Technologien und persönlicher Betreuung setzen wir neue Standards im Bauwesen. Unsere Projekte überzeugen durch Kosteneffizienz, Termintreue und Nachhaltigkeit – Eigenschaften, die uns als verlässlichen Partner auszeichnen.</p>
+            
+            <h3><i class="fas fa-trophy"></i> Profitieren Sie als Kunde von unserem erstklassigen Service</h3>
+            <h4><i class="fas fa-check-circle"></i> Ihre Vorteile</h4>
+        </div>
+        
+        <div class="features-container">
+            <div class="feature-box">
+                <div class="feature-icon">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <h3>Individuelle Beratung</h3>
+                <p>Persönliche Betreuung für jedes Projekt mit maßgeschneiderten Lösungen</p>
+            </div>
+            
+            <div class="feature-box">
+                <div class="feature-icon">
+                    <i class="fas fa-history"></i>
+                </div>
+                <h3>Langjährige Erfahrung</h3>
+                <p>Über 25 Jahre Expertise in der Baubranche mit hunderten erfolgreichen Projekten</p>
+            </div>
+            
+            <div class="feature-box">
+                <div class="feature-icon">
+                    <i class="fas fa-award"></i>
+                </div>
+                <h3>Höchste Qualitätsstandards</h3>
+                <p>Wir sorgen für erstklassige und nachhaltige Bauausführung nach neuesten Standards</p>
+            </div>
+            
+            <div class="feature-box">
+                <div class="feature-icon">
+                    <i class="fas fa-map-marked-alt"></i>
+                </div>
+                <h3>Regionale Verankerung</h3>
+                <p>Wir kennen die lokalen Gegebenheiten, Vorschriften und bewährte Partner</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="portfolio-section" id="portfolio">
+        <div class="section-title">
+            <h2><i class="fas fa-briefcase"></i> Unsere Referenzprojekte</h2>
+        </div>
+        <div class="portfolio-grid">
+            <div class="portfolio-item">
+                <div class="portfolio-content">
+                    <div class="service-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <h3>Wohnbauprojekte</h3>
+                    <p>Einfamilienhäuser, Mehrfamilienhäuser und Wohnanlagen mit höchsten Qualitätsstandards</p>
+                </div>
+            </div>
+            <div class="portfolio-item">
+                <div class="portfolio-content">
+                    <div class="service-icon">
+                        <i class="fas fa-industry"></i>
+                    </div>
+                    <h3>Gewerbebau</h3>
+                    <p>Bürogebäude, Produktionshallen und Gewerbeobjekte mit modernster Ausstattung</p>
+                </div>
+            </div>
+            <div class="portfolio-item">
+                <div class="portfolio-content">
+                    <div class="service-icon">
+                        <i class="fas fa-hospital"></i>
+                    </div>
+                    <h3>Öffentliche Gebäude</h3>
+                    <p>Schulen, Krankenhäuser und öffentliche Einrichtungen nach höchsten Standards</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="testimonials-section">
+        <div class="section-title">
+            <h2><i class="fas fa-comments"></i> Was unsere Kunden sagen</h2>
+        </div>
+        <div class="testimonials-container">
+            <div class="testimonial-card">
+                <div class="testimonial-text">
+                    "MB Vision hat unser Bauvorhaben von Anfang bis Ende professionell begleitet. Die Kostenüberwachung war transparent und die Qualität hervorragend."
+                </div>
+                <div class="testimonial-author">
+                    <i class="fas fa-user"></i> Familie Müller
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <div class="testimonial-text">
+                    "Dank der Expertise von MB Vision konnten wir unser Gewerbegebäude termingerecht und im Budget fertigstellen. Absolute Empfehlung!"
+                </div>
+                <div class="testimonial-author">
+                    <i class="fas fa-building"></i> Schmidt GmbH
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <div class="testimonial-text">
+                    "Die Bauüberwachung war erstklassig. Probleme wurden frühzeitig erkannt und gelöst. Wir sind sehr zufrieden mit dem Service."
+                </div>
+                <div class="testimonial-author">
+                    <i class="fas fa-home"></i> Familie Weber
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="yachtyourself" id="yachtyourself">
+        <div class="section-title">
+            <h2><i class="fas fa-ship"></i> Yachtyourself</h2>
+        </div>
+        <div class="yachtyourself-content">
+            <div class="yachtyourself-image">
+                <img src="yachtyourself-image.jpg" alt="Yachtyourself">
+            </div>
+            <div class="yachtyourself-text">
+                <p><i class="fas fa-anchor"></i> MB Vision vereint Fachkompetenz und langjährige Erfahrung im Bereich Bauwesen. Mit modernsten Technologien erreichen wir nicht nur effizienteste Abläufe, sondern passen unsere Leistungen flexibel an die individuellen Anforderungen und Wünsche unserer Kunden an.</p>
+                <p><i class="fas fa-compass"></i> Unsere strukturierten Arbeitsabläufe, kundenorientierte Betreuung sowie unser Fokus auf Nachhaltigkeit und Qualität machen uns zum bevorzugten Partner für anspruchsvolle und erfolgreiche Bauprojekte.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <h2><i class="fas fa-calendar-check"></i> Vereinbaren Sie jetzt Ihr kostenloses Beratungsgespräch</h2>
+        <p><i class="fas fa-handshake"></i> Arbeiten Sie mit MB Vision und legen Sie den Grundstein für den Erfolg Ihres Bauprojekts. Vereinbaren Sie noch heute ein unverbindliches Beratungsgespräch und nutzen Sie die Chance, von unserer Expertise zu profitieren.</p>
+        <a href="#contact" class="btn">
+            <i class="fas fa-phone-alt"></i> BERATUNG VEREINBAREN
+        </a>
+    </section>
+
+    <section id="contact">
+        <div class="section-title">
+            <h2><i class="fas fa-envelope"></i> Kontakt</h2>
+        </div>
+        <form class="contact-form">
+            <div class="form-group">
+                <label for="name"><i class="fas fa-user"></i> Name & E-Mail</label>
+                <input type="text" id="name" required>
+            </div>
+            <div class="form-group">
+                <label for="phone"><i class="fas fa-phone"></i> Telefonnummer</label>
+                <input type="tel" id="phone">
+            </div>
+            <div class="form-group">
+                <label for="message"><i class="fas fa-comment"></i> Nachricht</label>
+                <textarea id="message" required></textarea>
+            </div>
+            <button type="submit" class="btn">
+                <i class="fas fa-paper-plane"></i> Nachricht senden
+            </button>
+        </form>
+    </section>
+
+    <footer>
+        <ul class="footer-links">
+            <li><a href="#home"><i class="fas fa-home"></i> HOME</a></li>
+            <li><a href="#services"><i class="fas fa-cogs"></i> LEISTUNGEN</a></li>
+            <li><a href="#yachtyourself"><i class="fas fa-ship"></i> YACHTYOURSELF</a></li>
+            <li><a href="#about"><i class="fas fa-users"></i> ÜBER UNS</a></li>
+            <li><a href="#contact"><i class="fas fa-envelope"></i> KONTAKT</a></li>
+            <li><a href="#"><i class="fas fa-info-circle"></i> IMPRESSUM</a></li>
+            <li><a href="#"><i class="fas fa-shield-alt"></i> DATENSCHUTZ</a></li>
+        </ul>
+        
+        <ul class="social-links">
+            <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+            <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+            <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
+            <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+        </ul>
+        
+        <div class="google-rating">
+            <div class="stars">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+            </div>
+            <span>5.0 Google Bewertung</span>
+        </div>
+        
+        <div class="copyright">
+            <i class="fas fa-copyright"></i> 2025 MB Vision GmbH. Alle Rechte vorbehalten.
+        </div>
+    </footer>
+
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            });
+        });
+
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate');
+                    
+                    if (entry.target.classList.contains('stat-box')) {
+                        animateCounter(entry.target);
+                    }
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.section-title, .about-content, .feature-box, .contact-form, .service-card, .portfolio-item, .testimonial-card, .timeline-item, .stat-box').forEach(el => {
+            observer.observe(el);
+        });
+
+        function animateCounter(element) {
+            const target = parseInt(element.querySelector('.stat-number').getAttribute('data-target'));
+            const counter = element.querySelector('.stat-number');
+            let current = 0;
+            const increment = target / 100;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                counter.textContent = Math.floor(current) + (target === 98 ? '%' : '');
+            }, 20);
+        }
+
+        let headerScrolled = false;
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50 && !headerScrolled) {
+                header.style.background = 'rgba(255, 255, 255, 0.98)';
+                header.style.backdropFilter = 'blur(15px)';
+                headerScrolled = true;
+            } else if (window.scrollY <= 50 && headerScrolled) {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+                header.style.backdropFilter = 'blur(10px)';
+                headerScrolled = false;
+            }
+        });
+
+        const contactForm = document.querySelector('.contact-form');
+        if(contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const button = this.querySelector('.btn');
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Wird gesendet...';
+                button.disabled = true;
+                
+                setTimeout(() => {
+                    button.innerHTML = '<i class="fas fa-check"></i> Gesendet!';
+                    setTimeout(() => {
+                        button.innerHTML = originalText;
+                        button.disabled = false;
+                        this.reset();
+                    }, 2000);
+                }, 1500);
+            });
+        }
+
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px) scale(1.05)';
+            });
+            
+            btn.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '1';
+        });
+    </script>
+</body>
+</html>
